@@ -1,4 +1,5 @@
 import os
+import zlib
 
 storage = b""
 image = None
@@ -6,9 +7,15 @@ varification = None
 data = None
 chunktype = None
 
+def decompression():
+    global storage
+    Storage_taken = zlib.decompress(storage)
+    return(Storage_taken)
+
 def idat_chunk_checker():
     global storage
     if chunktype == b'IDAT':
+        print("IDAT chunk found. Processing...")
         storage += data
         return storage
 
@@ -52,7 +59,8 @@ def main():
         ihdr_checker(length_checker)
         idat_chunk_checker()
         crc = image.read(4)    
-
+    decompression()
+    print(f"Decompression complete {decompression()}.")
 
 if __name__ == "__main__":
     main()
