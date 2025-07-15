@@ -1,12 +1,16 @@
 import os
 
+storage = b""
 image = None
 varification = None
 data = None
 chunktype = None
 
-def chunk():
-    None
+def idat_chunk_checker():
+    global storage
+    if chunktype == b'IDAT':
+        storage += data
+        return storage
 
 def image_chooser():
     global image
@@ -46,6 +50,7 @@ def main():
         length_checker = int.from_bytes(length, 'big')
         data = image.read(length_checker)
         ihdr_checker(length_checker)
+        idat_chunk_checker()
         crc = image.read(4)    
 
 
