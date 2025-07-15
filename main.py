@@ -28,6 +28,7 @@ def ihdr_parse():
     height = image.read(4)
     bit_depth = image.read(1)
     color_type = image.read(1)
+    BytesPerPixel = int.from_bytes(bit_depth) * int.from_bytes(color_type)
 
 
 def ihdr_checker(length):
