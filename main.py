@@ -15,8 +15,6 @@ def image_chooser():
 
 def reader():
         global chunktype, data, crc, length
-        global varification
-        varification = image.read(8)
         length = image.read(4)
         chunktype = image.read(4)
         data = image.read(13)
@@ -29,6 +27,8 @@ def ihdr_checker():
         print("This does not follow the specifications to be a PNG file. It doesn't have a valid IHDR format.")
 
 def signature_checking():
+    global varification
+    varification = image.read(8)
     expected_signature = b'\x89PNG\r\n\x1a\n'
     if varification != expected_signature:
         print("Invalid image signature. Not a correct png file.")
@@ -44,9 +44,10 @@ def convert_to_jpg():
 
 def main():
     image_chooser()
-    reader()
     signature_checking()
-    ihdr_checker()
+    while image != EOFError:
+        ihdr_checker()
+        reader()
     #image_opener()
     #print("Image opened successfully.")
 
