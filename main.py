@@ -2,16 +2,31 @@ import os
 
 image = None
 varification = None
+chunktype, data, crc, length = None, None, None, None
 
 def chunk():
     None
 
+
 def image_chooser():
     global image
-    global varification
     image = open(r"C:\Users\highl\OneDrive\Pictures\Screenshots\Screenshot 2025-07-14 201528.png", "rb")
-    varification = image.read(8)
 
+
+def reader():
+        global chunktype, data, crc, length
+        global varification
+        varification = image.read(8)
+        length = image.read(4)
+        chunktype = image.read(4)
+        data = image.read(13)
+        crc = image.read(4)
+
+def ihdr_checker():
+    if len(data) == 13:
+        print("This follows the specifications to be a PNG file.")
+    else:
+        print("This does not follow the specifications to be a PNG file. It doesn't have a valid IHDR format.")
 
 def signature_checking():
     expected_signature = b'\x89PNG\r\n\x1a\n'
@@ -29,7 +44,9 @@ def convert_to_jpg():
 
 def main():
     image_chooser()
+    reader()
     signature_checking()
+    ihdr_checker()
     #image_opener()
     #print("Image opened successfully.")
 
