@@ -21,10 +21,11 @@ def reader():
         crc = image.read(4)
 
 def ihdr_checker():
-    if len(data) == 13:
-        print("This follows the specifications to be a PNG file.")
-    else:
-        print("This does not follow the specifications to be a PNG file. It doesn't have a valid IHDR format.")
+    if chunktype == b'IHDR':
+        if len(data) == 13:
+            print("This follows the specifications to be a PNG file.")
+        else:
+            print("This does not follow the specifications to be a PNG file. It doesn't have a valid IHDR format.")
 
 def signature_checking():
     global varification
@@ -45,9 +46,14 @@ def convert_to_jpg():
 def main():
     image_chooser()
     signature_checking()
-    while image != EOFError:
-        ihdr_checker()
-        reader()
+    reader()
+    while True:
+        if length == "":
+            break
+        else:
+            ihdr_checker()
+            reader()
+            
     #image_opener()
     #print("Image opened successfully.")
 
