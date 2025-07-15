@@ -13,13 +13,9 @@ def image_chooser():
     image = open(r"C:\Users\highl\OneDrive\Pictures\Screenshots\Screenshot 2025-07-14 201528.png", "rb")
 
 
-def ihdr_checker():
-    pass
-    #if chunktype == b'IHDR':
-        #if len(data) == 13:
-        #    print("This follows the specifications to be a PNG file.")
-        #else:
-        #    print("This does not follow the specifications to be a PNG file. It doesn't have a valid IHDR format.")
+def ihdr_checker(length):
+    if chunktype == b'IHDR' and length == 13:
+        print("IHDR chunk found. Processing...")
 
 def signature_checking():
     global varification
@@ -42,15 +38,15 @@ def main():
     image_chooser()
     signature_checking()
     while True:
+        #length tells how big the data chunk is lmao
         length = image.read(4)
-        checker = str(length)
-        if checker == "":
+        if not length:
             break
         chunktype = image.read(4)
-        ihdr_checker()
+        length_checker = int.from_bytes(length, 'big')
+        data = image.read(length_checker)
+        ihdr_checker(length_checker)
         crc = image.read(4)    
-    #image_opener()
-    #print("Image opened successfully.")
 
 
 if __name__ == "__main__":
