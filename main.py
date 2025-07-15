@@ -1,17 +1,21 @@
 import os
 
 image = None
+varification = None
 
+def chunk():
+    None
 
 def image_chooser():
     global image
+    global varification
     image = open(r"C:\Users\highl\OneDrive\Pictures\Screenshots\Screenshot 2025-07-14 201528.png", "rb")
-    image = image.read(8)
+    varification = image.read(8)
 
 
 def signature_checking():
     expected_signature = b'\x89PNG\r\n\x1a\n'
-    if image != expected_signature:
+    if varification != expected_signature:
         print("Invalid image signature. Not a correct png file.")
     else:
         print("Image signature is valid. Proceeding with the image.")
