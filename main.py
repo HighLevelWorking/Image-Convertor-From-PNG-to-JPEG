@@ -60,7 +60,6 @@ def main():
         idat_chunk_checker()
         crc = image.read(4)    
     decompression()
-    print(f"Decompression complete {decompression()}.")
 
 if __name__ == "__main__":
     main()
