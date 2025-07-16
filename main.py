@@ -27,6 +27,13 @@ def image_chooser():
 def ihdr_checker(length):
     if chunktype == b'IHDR' and length == 13:
         print("IHDR chunk found. Processing...")
+        ihdr_data = data
+        width = int.from_bytes(ihdr_data[0:4], 'big')
+        height = int.from_bytes(ihdr_data[4:8], 'big')
+        bit_depth = ihdr_data[8]
+        color_type = ihdr_data[9]
+        bit_per_pixel = color_type * bit_depth
+        print(f"Image Width: {width}, Height: {height}, Bit Depth: {bit_depth}, Color Type: {color_type}, Bits per Pixel: {bit_per_pixel}")
 
 def signature_checking():
     global varification
