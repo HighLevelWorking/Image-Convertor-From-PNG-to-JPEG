@@ -50,6 +50,16 @@ def signature_checking():
     else:
         print("Image signature is valid. Proceeding with the image.")
 
+def unfiltering(decom_data):
+    index = 0
+    global width, height, byt_per_pixel
+    scanline_bytes = int(1 + (width * (bit_per_pixel / 8)))
+    for i in range(height):
+        index += 1
+        for x in range(scanline_bytes):
+            filter_byte = decom_data[index]
+            rest = decom_data[index + 1:index + scanline_bytes]
+
 def image_opener():
     os.system("explorer C:\\Users\\highl\\OneDrive\\Pictures\\Screenshots\\Screenshot 2025-07-14 201528.png")
 
@@ -72,7 +82,7 @@ def main():
         ihdr_checker(length_checker)
         idat_chunk_checker()
         crc = image.read(4)    
-    decompression()
-
+    values_of_decompression = decompression()
+    unfiltering(values_of_decompression)
 if __name__ == "__main__":
     main()
