@@ -57,9 +57,9 @@ def unfiltering(decom_data):
     for i in range(height):
         filter_byte = decom_data[index]
         rest = decom_data[index + 1:index + scanline_bytes]
-        index += 1
+        index += scanline_bytes
 
-def image_opener():
+def image_opener(): 
     os.system("explorer C:\\Users\\highl\\OneDrive\\Pictures\\Screenshots\\Screenshot 2025-07-14 201528.png")
 
 def convert_to_jpg():
