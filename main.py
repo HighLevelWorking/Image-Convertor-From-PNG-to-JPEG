@@ -6,6 +6,11 @@ image = None
 varification = None
 data = None
 chunktype = None
+width = None
+height = None
+bit_depth = None
+color_type = None
+bit_per_pixel = None
 
 def decompression():
     global storage
@@ -25,6 +30,7 @@ def image_chooser():
 
 
 def ihdr_checker(length):
+    global width, height, bit_depth, color_type, bit_per_pixel
     if chunktype == b'IHDR' and length == 13:
         print("IHDR chunk found. Processing...")
         ihdr_data = data
