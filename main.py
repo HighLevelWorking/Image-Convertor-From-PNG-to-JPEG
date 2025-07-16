@@ -52,13 +52,13 @@ def signature_checking():
 
 def unfiltering(decom_data):
     index = 0
-    global width, height, byt_per_pixel
+    global width, height, bit_per_pixel
     scanline_bytes = int(1 + (width * (bit_per_pixel / 8)))
     for i in range(height):
-        index += 1
         for x in range(scanline_bytes):
             filter_byte = decom_data[index]
             rest = decom_data[index + 1:index + scanline_bytes]
+            index += 1
 
 def image_opener():
     os.system("explorer C:\\Users\\highl\\OneDrive\\Pictures\\Screenshots\\Screenshot 2025-07-14 201528.png")
