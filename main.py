@@ -21,21 +21,13 @@ def idat_chunk_checker():
 
 def image_chooser():
     global image
-    image = open(r"C:\Users\highl\Downloads\Screenshot 2025-07-15 060344.png", "rb")
-
-def ihdr_parse():
-    width = image.read(4)
-    height = image.read(4)
-    bit_depth = image.read(1)
-    color_type = image.read(1)
-    BytesPerPixel = int.from_bytes(bit_depth) * int.from_bytes(color_type)
+    image = open(r"C:\Users\highl\OneDrive\Pictures\Screenshots\Screenshot 2025-07-14 201528.png", "rb")
 
 
 def ihdr_checker(length):
     if chunktype == b'IHDR' and length == 13:
         print("IHDR chunk found. Processing...")
-        ihdr_parse()
-       
+
 def signature_checking():
     global varification
     varification = image.read(8)
@@ -44,8 +36,6 @@ def signature_checking():
         print("Invalid image signature. Not a correct png file.")
     else:
         print("Image signature is valid. Proceeding with the image.")
-
-
 
 def image_opener():
     os.system("explorer C:\\Users\\highl\\OneDrive\\Pictures\\Screenshots\\Screenshot 2025-07-14 201528.png")
