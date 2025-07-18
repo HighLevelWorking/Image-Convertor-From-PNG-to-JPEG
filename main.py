@@ -51,13 +51,29 @@ def signature_checking():
         print("Image signature is valid. Proceeding with the image.")
 
 def unfiltering(decom_data):
+    filtered_data = b""
     index = 0
     global width, height, bit_per_pixel
     scanline_bytes = int(1 + (width * (bit_per_pixel // 8)))
     for i in range(height):
         filter_byte = decom_data[index]
         rest = decom_data[index + 1:index + scanline_bytes]
-        index += scanline_bytes
+        if filter_byte == 0:
+            print("Scanline has been filtered")
+            filtered_data += rest
+        elif filter_byte == 1:
+            recon = bytearray()
+            for x in range(len(rest)):
+                if x >= bit_per_pixel:
+                    left = recon[x-bit_per_pixel]
+                else:
+                    left = 0
+                val = (rest[x]+left) % 256
+                recon.append(val)
+        if index + scanline_bytes > len(decom_data):
+            raise ValueError("Scanline exceeds available data. Check bit depth, width, or corruption.")
+        else:
+            index += scanline_bytes
 
 def image_opener(): 
     os.system("explorer C:\\Users\\highl\\OneDrive\\Pictures\\Screenshots\\Screenshot 2025-07-14 201528.png")
