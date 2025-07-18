@@ -59,13 +59,14 @@ def unfiltering(decom_data):
         filter_byte = decom_data[index]
         rest = decom_data[index + 1:index + scanline_bytes]
         if filter_byte == 0:
-            print("Scanline has been filtered")
+            print("filter 0 applied")
             filtered_data += rest
         elif filter_byte == 1:
+            print("Filter 1 applied")
             recon = bytearray()
             for x in range(len(rest)):
-                if x >= bit_per_pixel:
-                    left = recon[x-bit_per_pixel]
+                if x >= scanline_bytes:
+                    left = recon[x-scanline_bytes]
                 else:
                     left = 0
                 val = (rest[x]+left) % 256
