@@ -38,7 +38,19 @@ def ihdr_checker(length):
         height = int.from_bytes(ihdr_data[4:8], 'big')
         bit_depth = ihdr_data[8]
         color_type = ihdr_data[9]
-        bit_per_pixel = color_type * bit_depth
+        if color_type == 0:   # Grayscale
+            channels = 1
+        elif color_type == 2: # RGB
+            channels = 3
+        elif color_type == 3: # Indexed
+            channels = 1
+        elif color_type == 4: # Grayscale + Alpha
+            channels = 2
+        elif color_type == 6: # RGBA
+            channels = 4
+        else:
+            raise ValueError("Unsupported color type")
+        bit_per_pixel = channels * bit_depth
         print(f"Image Width: {width}, Height: {height}, Bit Depth: {bit_depth}, Color Type: {color_type}, Bits per Pixel: {bit_per_pixel}")
 
 def signature_checking():
@@ -51,30 +63,37 @@ def signature_checking():
         print("Image signature is valid. Proceeding with the image.")
 
 def unfiltering(decom_data):
+    global width, height, bit_per_pixel
+    bytes_per_pixel = bit_per_pixel // 8
     filtered_data = b""
     index = 0
-    global width, height, bit_per_pixel
-    scanline_bytes = int(1 + (width * (bit_per_pixel // 8)))
+    scanline_bytes = 1 + (width * bytes_per_pixel)
+
     for i in range(height):
+        if index + scanline_bytes > len(decom_data):
+            raise ValueError("Scanline exceeds available data.")
+
         filter_byte = decom_data[index]
         rest = decom_data[index + 1:index + scanline_bytes]
+
         if filter_byte == 0:
-            print("filter 0 applied")
+            print("Filter 0 applied")
             filtered_data += rest
+
         elif filter_byte == 1:
             print("Filter 1 applied")
             recon = bytearray()
             for x in range(len(rest)):
-                if x >= scanline_bytes:
-                    left = recon[x-scanline_bytes]
-                else:
-                    left = 0
-                val = (rest[x]+left) % 256
+                left = recon[x - bytes_per_pixel] if x >= bytes_per_pixel else 0
+                val = (rest[x] + left) % 256
                 recon.append(val)
-        if index + scanline_bytes > len(decom_data):
-            raise ValueError("Scanline exceeds available data. Check bit depth, width, or corruption.")
-        else:
-            index += scanline_bytes
+            filtered_data += bytes(recon)
+
+        index += scanline_bytes
+
+    return filtered_data
+
+
 
 def image_opener(): 
     os.system("explorer C:\\Users\\highl\\OneDrive\\Pictures\\Screenshots\\Screenshot 2025-07-14 201528.png")
@@ -99,6 +118,7 @@ def main():
         idat_chunk_checker()
         crc = image.read(4)    
     values_of_decompression = decompression()
-    unfiltering(values_of_decompression)
+    raw_pixels = unfiltering(values_of_decompression)
+
 if __name__ == "__main__":
     main()
