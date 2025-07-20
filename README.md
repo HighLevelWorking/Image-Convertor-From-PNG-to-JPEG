@@ -1,0 +1,1 @@
+First big project i am working on. It is a png to jpeg convertor made from scratch using no libraries(at least thats the goal). Till now i have only completed about 40% of the actual png convertor. I am using the zlip and os libraries for now but will soon make alternatives myself.
