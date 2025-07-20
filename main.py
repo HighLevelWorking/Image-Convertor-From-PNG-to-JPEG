@@ -68,6 +68,7 @@ def unfiltering(decom_data):
     filtered_data = b""
     index = 0
     scanline_bytes = 1 + (width * bytes_per_pixel)
+    prev_scanline = bytearray([0] * (width * bytes_per_pixel))
 
     for i in range(height):
         if index + scanline_bytes > len(decom_data):
@@ -88,9 +89,18 @@ def unfiltering(decom_data):
                 val = (rest[x] + left) % 256
                 recon.append(val)
             filtered_data += bytes(recon)
+            
+        elif filter_byte == 2:
+            print("Filter 2 (Up) applied")
+            recon = bytearray()
+            for x in range(len(rest)):
+                above = prev_scanline[x] if prev_scanline else 0
+                val = (rest[x] + above) % 256
+                recon.append(val)
+            filtered_data += bytes(recon)
+            prev_scanline = recon
 
         index += scanline_bytes
-
     return filtered_data
 
 
