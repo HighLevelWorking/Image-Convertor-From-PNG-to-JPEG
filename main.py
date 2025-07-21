@@ -102,15 +102,40 @@ def unfiltering(decom_data):
 
         elif filter_byte == 3:
             print("Filter 3 (Average) applied")
-            recon = bytearray
+            recon = bytearray()
             for d in range(len(rest)):
-                left = recon[d - bytes_per_pixel] if x >= bytes_per_pixel else 0
-                above = prev_scanline[x] if prev_scanline else 0
+                left = recon[d - bytes_per_pixel] if d >= bytes_per_pixel else 0
+                above = prev_scanline[d] if prev_scanline else 0
                 avg = (left + above)//2
-                val = (rest[x]+avg) % 256
-                recon.append[val]
-            filter_byte += bytes(recon)
+                val = (rest[d]+avg) % 256
+                recon.append(val)
+            filtered_data += bytes(recon)
             prev_scanline = recon
+
+        elif filter_byte == 4:
+            print("Filter 4 (Paeth) applied")
+            recon = bytearray()
+            for z in range(len(rest)):
+                left = recon[z - bytes_per_pixel] if z >= bytes_per_pixel else 0
+                above = prev_scanline[z] if prev_scanline else 0
+                upper_left = prev_scanline[z-bytes_per_pixel] if (z >= bytes_per_pixel and prev_scanline) else 0
+
+                p = left + above - upper_left
+                pa = abs(p - left)
+                pb = abs(p - above)
+                pc = abs(p - upper_left)
+
+                if pa <= pb and pa <= pc:
+                    predictor = left
+                elif pb <= pc:
+                    predictor = above
+                else:
+                    predictor = upper_left
+                val = (rest[z] + predictor) % 256
+                recon.append(val)
+            filtered_data += bytes(recon)
+            prev_scanline  = recon
+
         index += scanline_bytes
     return filtered_data
 
