@@ -80,6 +80,7 @@ def unfiltering(decom_data):
         if filter_byte == 0:
             print("Filter 0 (None) applied")
             filtered_data += rest
+            prev_scanline = bytearray(rest)
 
         elif filter_byte == 1:
             print("Filter 1 (Sub) applied")
@@ -89,6 +90,7 @@ def unfiltering(decom_data):
                 val = (rest[x] + left) % 256
                 recon.append(val)
             filtered_data += bytes(recon)
+            prev_scanline = recon
             
         elif filter_byte == 2:
             print("Filter 2 (Up) applied")
@@ -166,7 +168,7 @@ def structured_pixel_data(raw_pixels):
                 row.append((pixel_data[0],))
             elif color_type == 2:
                 row.append(tuple(pixel_data))
-            pixels.append(row)
+        pixels.append(row)
     return pixels
 
 
@@ -176,6 +178,19 @@ def image_opener():
 def convert_to_jpg():
     # Placeholder for conversion logic
     pass
+
+def rbg_to_ycbcr(pixels):
+    height = len(pixels)
+    width = len(pixels[0])
+    ycbcr = [[None] * width for _ in range(height)]
+    for i in range(height):
+        for j in range(width):
+            r, g, b = pixels[i][j]
+            y =  0.299*r + 0.587*g + 0.114*b
+            cb = -0.168736*r - 0.331264*g + 0.5*b + 128
+            cr =  0.5*r - 0.418688*g - 0.081312*b + 128
+            ycbcr[i][j] = (int(round(y)), int(round(cb)), int(round(cr)))
+    return ycbcr
 
 def main():
     global data, chunktype
