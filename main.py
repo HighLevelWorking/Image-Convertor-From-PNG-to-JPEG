@@ -139,6 +139,35 @@ def unfiltering(decom_data):
         index += scanline_bytes
     return filtered_data
 
+def structured_pixel_data(raw_pixels):
+    global color_type, bit_per_pixel, width, height
+    if color_type == 0:
+        print("Greyscale is accepted by jpeg")
+    elif color_type == 2: # RGB
+        print("RGB is also supported")
+    elif color_type == 3: # Indexed
+        print("Error")
+    elif color_type == 4: # Grayscale + Alpha
+        print("Error")
+    elif color_type == 6: # RGBA
+        print("Error")
+    else:
+        raise ValueError("Unsupported color type")
+    byte_per_pixel = bit_per_pixel // 8
+    row_bytes = width * byte_per_pixel
+    pixels = []
+    for y in range(height):
+        row_start = y * row_bytes
+        row_end = row_start + row_bytes
+        row = []
+        for x in range(0, row_bytes, byte_per_pixel):
+            pixel_data = raw_pixels[row_start + x : row_start + x + byte_per_pixel]
+            if color_type == 0:
+                row.append((pixel_data[0],))
+            elif color_type == 2:
+                row.append(tuple(pixel_data))
+            pixels.append(row)
+    return pixels
 
 
 def image_opener(): 
@@ -165,6 +194,8 @@ def main():
         crc = image.read(4)    
     values_of_decompression = decompression()
     raw_pixels = unfiltering(values_of_decompression)
+    structured_pixels = structured_pixel_data(raw_pixels)
+
 
 if __name__ == "__main__":
     main()
