@@ -150,6 +150,42 @@ def rgb_to_ycbcr(pixels):
     print("RGB→YCbCr conversion completed for all pixels.")
     return pixels
 
+def subsample_420(pixels):
+    height = len(pixels)
+    width = len(pixels[0])
+
+    Y  = [[0]*width for _ in range(height)]
+    Cb = [[0]*((width+1)//2) for _ in range((height+1)//2)]
+    Cr = [[0]*((width+1)//2) for _ in range((height+1)//2)]
+
+    # Fill Y channel
+    for i in range(height):
+        for j in range(width):
+            y_val, _, _ = pixels[i][j]
+            Y[i][j] = y_val
+
+    # Subsample Cb and Cr channels (2x2 average)
+    for i in range(0, height, 2):
+        for j in range(0, width, 2):
+            cb_sum = cr_sum = count = 0
+            for di in range(2):
+                for dj in range(2):
+                    ni, nj = i + di, j + dj
+                    if ni < height and nj < width:
+                        _, cb_val, cr_val = pixels[ni][nj]
+                        cb_sum += cb_val
+                        cr_sum += cr_val
+                        count += 1
+            out_i = i // 2
+            out_j = j // 2
+            Cb[out_i][out_j] = cb_sum // count
+            Cr[out_i][out_j] = cr_sum // count
+
+    print("Chroma subsampling (4:2:0) completed.")
+    return Y, Cb, Cr
+
+
+
 def main():
     global data, chunktype
     image_chooser()
@@ -179,6 +215,7 @@ def main():
 
     print("Calling RGB→YCbCr converter…")
     _ = rgb_to_ycbcr(structured)
+    y, cb, cr = subsample_420(structured)
 
 if __name__ == "__main__":
     main()
